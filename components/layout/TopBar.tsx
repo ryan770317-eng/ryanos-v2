@@ -10,15 +10,15 @@ export function TopBar() {
         backgroundColor: 'var(--bg)',
         borderBottom: '1px solid var(--border)',
       }}
-      className="sticky top-0 z-40 flex items-center justify-between px-5 py-4 md:px-8"
+      className="sticky top-0 z-40 flex items-center justify-between px-5 py-3 md:px-8"
     >
-      <Link href="/" className="no-underline">
-        <span
-          className="font-display text-2xl tracking-tight"
-          style={{ color: 'var(--text-primary)' }}
-        >
-          RYANOS
-        </span>
+      <Link href="/" className="no-underline flex items-center" aria-label="RYANOS">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo-black.svg"
+          alt="RYANOS"
+          style={{ height: 28, width: 'auto' }}
+        />
       </Link>
 
       <Link
