@@ -8,6 +8,13 @@ const ICONS: Record<CategoryId, React.ComponentType<{ size?: number; style?: Rea
   health: HeartPulse,
 }
 
+const CATEGORY_COLORS: Record<CategoryId, string> = {
+  knowledge: 'var(--cat-knowledge)',
+  work: 'var(--cat-work)',
+  personal: 'var(--cat-personal)',
+  health: 'var(--cat-health)',
+}
+
 interface CategoryHeaderProps {
   id: CategoryId
   name: string
@@ -15,13 +22,19 @@ interface CategoryHeaderProps {
 
 export function CategoryHeader({ id, name }: CategoryHeaderProps) {
   const Icon = ICONS[id]
+  const color = CATEGORY_COLORS[id]
 
   return (
-    <div className="flex items-center gap-2 mb-4">
-      <Icon size={16} style={{ color: 'var(--text-secondary)' }} />
+    <div className="flex items-center gap-2.5 mb-5">
+      <div
+        className="w-7 h-7 rounded-lg flex items-center justify-center"
+        style={{ backgroundColor: `color-mix(in srgb, ${color} 12%, transparent)` }}
+      >
+        <Icon size={14} style={{ color }} />
+      </div>
       <h2
-        className="text-sm font-semibold uppercase tracking-widest"
-        style={{ color: 'var(--text-secondary)' }}
+        className="text-sm font-bold tracking-wide"
+        style={{ color: 'var(--text-primary)' }}
       >
         {name}
       </h2>
