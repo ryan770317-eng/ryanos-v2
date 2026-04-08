@@ -32,7 +32,8 @@ export default function RootLayout({
   return (
     <html lang="zh-TW" className="h-full">
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icons/icon.svg" />
+        <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
       </head>
       <body className="h-full flex flex-col" style={{ backgroundColor: 'var(--bg)' }}>
         <TopBar />
