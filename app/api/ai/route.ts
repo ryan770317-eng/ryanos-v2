@@ -24,10 +24,11 @@ const MODEL_MAP: Record<string, string> = {
 export async function POST(req: Request) {
   const toolId = 'ai-route'
   try {
-    const body = await req.json() as {
-      type: string
-      content: string
-      options?: Record<string, unknown>
+    let body: { type: string; content: string; options?: Record<string, unknown> }
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ success: false, error: '請提供有效的 JSON body' }, { status: 400 })
     }
     const { type, content, options } = body
 

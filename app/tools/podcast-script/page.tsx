@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ScrollText, Copy, Download, ArrowRight, Loader2, CheckCheck } from 'lucide-react'
+import { ScrollText, Copy, Download, ArrowRight, Loader2, CheckCheck } from 'lucide-react'
+import { BackButton } from '@/components/layout/BackButton'
 import { PODCAST_SERIES } from '@/lib/podcast-prompts'
 
 function parseResult(raw: string): { script: string; report: string } {
@@ -81,14 +81,7 @@ export default function PodcastScriptPage() {
     <div className="flex flex-col gap-6 pb-16">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link
-          href="/"
-          className="flex items-center gap-1.5 text-sm transition-colors hover:text-[var(--text-primary)]"
-          style={{ color: 'var(--text-secondary)' }}
-        >
-          <ArrowLeft size={16} />
-          返回
-        </Link>
+        <BackButton />
         <div className="flex items-center gap-2">
           <ScrollText size={18} style={{ color: 'var(--text-primary)' }} />
           <h1 className="font-display text-2xl" style={{ color: 'var(--text-primary)' }}>

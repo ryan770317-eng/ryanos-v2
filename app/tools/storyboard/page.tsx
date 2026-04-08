@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import Link from 'next/link'
-import { ArrowLeft, Clapperboard, Download, RefreshCw, ChevronRight } from 'lucide-react'
+import { Clapperboard, Download, RefreshCw, ChevronRight } from 'lucide-react'
+import { BackButton } from '@/components/layout/BackButton'
 import { parseSegments } from '@/lib/parse-segments'
 import type { StoryboardFrameResult } from '@/app/api/storyboard/route'
 
@@ -223,14 +223,7 @@ export default function StoryboardPage() {
     <div className="flex flex-col gap-6 pb-16">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link
-          href="/"
-          className="flex items-center gap-1.5 text-sm transition-colors hover:text-[var(--text-primary)]"
-          style={{ color: 'var(--text-secondary)' }}
-        >
-          <ArrowLeft size={16} />
-          返回
-        </Link>
+        <BackButton />
         <div className="flex items-center gap-2">
           <Clapperboard size={18} style={{ color: 'var(--text-primary)' }} />
           <h1 className="font-display text-2xl" style={{ color: 'var(--text-primary)' }}>

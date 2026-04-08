@@ -20,7 +20,7 @@ export const tools: Tool[] = [
     category: 'knowledge',
     type: 'builtin',
     route: '/tools/tts',
-    requiredKeys: ['FISH_AUDIO_API_KEY', 'FISH_AUDIO_VOICE_ID'],
+    requiredKeys: ['FISH_AUDIO_API_KEY', 'FISH_AUDIO_VOICE_ID', 'ELEVENLABS_API_KEY', 'ELEVENLABS_VOICE_ID'],
     status: 'active',
   },
   {

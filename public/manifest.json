@@ -4,14 +4,26 @@
   "description": "Ryan 的個人工具 Launcher",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ebebeb",
-  "theme_color": "#ebebeb",
+  "background_color": "#f0f0f0",
+  "theme_color": "#f0f0f0",
   "orientation": "portrait",
   "icons": [
     {
       "src": "/icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

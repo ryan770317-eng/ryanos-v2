@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import Link from 'next/link'
-import { ArrowLeft, Mic, Play, Pause, Download, Loader2 } from 'lucide-react'
+import { Mic, Play, Pause, Download, Loader2 } from 'lucide-react'
+import { BackButton } from '@/components/layout/BackButton'
 import { cleanScriptForTTS } from '@/lib/tts-utils'
 
 function formatBytes(bytes: number) {
@@ -11,8 +11,11 @@ function formatBytes(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
+type Engine = 'fish' | 'elevenlabs'
+
 export default function TtsPage() {
   const [text, setText] = useState('')
+  const [engine, setEngine] = useState<Engine>('fish')
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState('')
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
@@ -43,7 +46,7 @@ export default function TtsPage() {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: clean }),
+        body: JSON.stringify({ text: clean, engine }),
       })
 
       if (!res.ok) {
@@ -84,14 +87,7 @@ export default function TtsPage() {
     <div className="flex flex-col gap-6 pb-16">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link
-          href="/"
-          className="flex items-center gap-1.5 text-sm transition-colors hover:text-[var(--text-primary)]"
-          style={{ color: 'var(--text-secondary)' }}
-        >
-          <ArrowLeft size={16} />
-          返回
-        </Link>
+        <BackButton />
         <div className="flex items-center gap-2">
           <Mic size={18} style={{ color: 'var(--text-primary)' }} />
           <h1 className="font-display text-2xl" style={{ color: 'var(--text-primary)' }}>
@@ -130,6 +126,29 @@ export default function TtsPage() {
               清除
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Engine selector */}
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--text-secondary)' }}>
+          語音引擎
+        </label>
+        <div className="flex gap-2">
+          {([['fish', 'Fish Audio'], ['elevenlabs', 'ElevenLabs']] as const).map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => setEngine(id)}
+              className="px-4 py-2 rounded-[var(--radius-btn)] text-sm font-medium transition-colors"
+              style={{
+                backgroundColor: engine === id ? 'var(--text-primary)' : 'var(--surface)',
+                color: engine === id ? 'var(--bg)' : 'var(--text-secondary)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -221,8 +240,9 @@ export default function TtsPage() {
       >
         <p className="font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>使用說明</p>
         <ul className="list-disc list-inside space-y-0.5">
-          <li>使用 Fish Audio s2-pro 模型，支援長文單次生成</li>
-          <li>Voice ID 與 API Key 請至設定頁填入</li>
+          <li>Fish Audio：s2-pro 模型，支援長文單次生成</li>
+          <li>ElevenLabs：高品質多語言語音合成</li>
+          <li>各引擎的 API Key 與 Voice ID 請至設定頁填入</li>
           <li>生成完成後可在瀏覽器播放或下載 .mp3</li>
         </ul>
       </div>

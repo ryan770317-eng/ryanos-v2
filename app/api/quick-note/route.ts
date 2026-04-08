@@ -16,7 +16,12 @@ async function getClaudeKey(): Promise<string | null> {
 export async function POST(req: Request) {
   const toolId = 'quick-note'
   try {
-    const body = await req.json() as { content: string; noteId?: string }
+    let body: { content: string; noteId?: string }
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ success: false, error: '請提供有效的 JSON body' }, { status: 400 })
+    }
     const { content, noteId } = body
 
     if (!content?.trim()) {

@@ -24,22 +24,23 @@ export interface StoryboardFrameResult {
 export async function POST(req: Request) {
   const toolId = 'storyboard'
   try {
-    const body = await req.json() as {
-      segment: string
-      index: number
-      fullScript: string
+    let body: { segment: string; index: number; fullScript: string }
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ success: false, error: '請提供有效的 JSON body' }, { status: 400 })
     }
 
     const { segment, index, fullScript } = body
 
     if (!segment || typeof index !== 'number') {
-      return NextResponse.json({ error: 'Missing required fields: segment, index' }, { status: 400 })
+      return NextResponse.json({ success: false, error: 'Missing required fields: segment, index' }, { status: 400 })
     }
 
     const apiKey = await getApiKey()
     if (!apiKey) {
       return NextResponse.json(
-        { index, error: '請先在設定頁填入 Google AI API Key' },
+        { success: false, index, error: '請先在設定頁填入 Google AI API Key' },
         { status: 400 }
       )
     }
@@ -77,6 +78,6 @@ export async function POST(req: Request) {
   } catch (err) {
     const error = err instanceof Error ? err : new Error(String(err))
     await toolLog(toolId, 'error', error.message, { stack: error.stack })
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
   }
 }

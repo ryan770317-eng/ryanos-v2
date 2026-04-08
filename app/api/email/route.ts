@@ -4,7 +4,12 @@ import { toolLog } from '@/lib/logger'
 export async function POST(req: Request) {
   const toolId = 'email-scan'
   try {
-    await req.json() // Placeholder — to be implemented in P5
+    try {
+      await req.json()
+    } catch {
+      return NextResponse.json({ success: false, error: '請提供有效的 JSON body' }, { status: 400 })
+    }
+    // Placeholder — to be implemented in P5
     await toolLog(toolId, 'info', '收到 Email 掃描請求（尚未實作）')
     return NextResponse.json({ success: false, error: '尚未實作' }, { status: 501 })
   } catch (err) {

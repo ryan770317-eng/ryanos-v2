@@ -20,6 +20,14 @@ export const API_KEY_LABELS: Record<string, { label: string; usedBy: string[] }>
     label: 'Fish Audio Voice ID',
     usedBy: ['出言不遜'],
   },
+  ELEVENLABS_API_KEY: {
+    label: 'ElevenLabs API Key',
+    usedBy: ['出言不遜'],
+  },
+  ELEVENLABS_VOICE_ID: {
+    label: 'ElevenLabs Voice ID',
+    usedBy: ['出言不遜'],
+  },
   GOOGLE_AI_API_KEY: {
     label: 'Google AI API Key',
     usedBy: ['麥麥分鏡'],
