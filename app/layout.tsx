@@ -1,24 +1,24 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
-import { TopBar } from '@/components/layout/TopBar'
-import { QuickNoteFloating } from '@/components/layout/QuickNoteFloating'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { Sidebar } from '@/components/navigation/Sidebar'
+import { BottomTabBar } from '@/components/navigation/BottomTabBar'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'RYANOS',
-  description: 'Ryan 的個人工具 Launcher',
+  description: 'Ryan 的個人 Dashboard',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+    statusBarStyle: 'black-translucent',
     title: 'RYANOS',
   },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#f0f0f0',
+  themeColor: '#111111',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -36,13 +36,15 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon.svg" />
         <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
       </head>
-      <body className="h-full flex flex-col" style={{ backgroundColor: 'var(--color-bg)' }}>
+      <body className="h-full" style={{ backgroundColor: 'var(--color-bg)' }}>
         <ThemeProvider>
-          <TopBar />
-          <main className="flex-1 overflow-auto px-5 py-6 md:px-8 md:py-8 max-w-5xl mx-auto w-full">
-            {children}
+          <Sidebar />
+          <main className="h-full overflow-auto px-4 py-6 pb-24 md:pb-6 md:pl-[calc(var(--sidebar-width-collapsed)+24px)]">
+            <div className="max-w-6xl mx-auto">
+              {children}
+            </div>
           </main>
-          <QuickNoteFloating />
+          <BottomTabBar />
         </ThemeProvider>
       </body>
     </html>

@@ -1,40 +1,64 @@
-import { tools } from '@/lib/tools-registry'
-import { supabase, isSupabaseConfigured } from '@/lib/supabase'
-import { ToolGrid } from '@/components/launcher/ToolGrid'
-import Link from 'next/link'
-import { Settings } from 'lucide-react'
+'use client'
 
-async function getConfiguredKeys(): Promise<string[]> {
-  if (!isSupabaseConfigured) return []
-  try {
-    const { data, error } = await supabase
-      .from('user_settings')
-      .select('key')
-    if (error) return []
-    return (data ?? []).map((row: { key: string }) => row.key)
-  } catch {
-    return []
-  }
-}
+import { useState } from 'react'
+import { RyanScoreCard } from '@/components/dashboard/RyanScoreCard'
+import { ProjectsCard } from '@/components/dashboard/ProjectsCard'
+import { ScreenshotCard } from '@/components/dashboard/ScreenshotCard'
+import { WeeklyProgressCard } from '@/components/dashboard/WeeklyProgressCard'
+import { WeeklyPlanner } from '@/components/dashboard/WeeklyPlanner'
 
-export default async function HomePage() {
-  const configuredKeys = await getConfiguredKeys()
+export default function OverviewPage() {
+  const [plannerOpen, setPlannerOpen] = useState(false)
 
   return (
     <>
-      {!isSupabaseConfigured && (
-        <div
-          className="mb-6 flex items-center justify-between gap-3 px-4 py-3 rounded-[var(--radius-card)] text-sm"
-          style={{ backgroundColor: 'var(--accent)', color: 'var(--text-primary)' }}
-        >
-          <span className="font-medium">尚未設定 Supabase — 請填入 .env.local</span>
-          <Link href="/settings" className="flex items-center gap-1 font-semibold shrink-0">
-            <Settings size={14} />
-            設定
-          </Link>
+      {/* Mobile: stack */}
+      <div className="flex flex-col gap-[var(--grid-gap)] md:hidden">
+        <div style={{ minHeight: 320 }}>
+          <RyanScoreCard onOpenPlanner={() => setPlannerOpen(true)} />
         </div>
-      )}
-      <ToolGrid tools={tools} configuredKeys={configuredKeys} />
+        <div style={{ minHeight: 240 }}>
+          <ProjectsCard />
+        </div>
+        <div style={{ minHeight: 100 }}>
+          <ScreenshotCard />
+        </div>
+        <div style={{ minHeight: 100 }}>
+          <WeeklyProgressCard />
+        </div>
+      </div>
+
+      {/* Desktop: 6-col bento grid */}
+      <div
+        className="hidden md:grid gap-[var(--grid-gap)]"
+        style={{
+          gridTemplateColumns: 'repeat(6, 1fr)',
+          gridAutoRows: '100px',
+        }}
+      >
+        {/* Ryan Score — 2×3 */}
+        <div style={{ gridColumn: 'span 2', gridRow: 'span 3' }}>
+          <RyanScoreCard onOpenPlanner={() => setPlannerOpen(true)} />
+        </div>
+
+        {/* 手邊專案 — 2×2 */}
+        <div style={{ gridColumn: 'span 2', gridRow: 'span 2' }}>
+          <ProjectsCard />
+        </div>
+
+        {/* 截圖辨識 — 2×1 */}
+        <div style={{ gridColumn: 'span 2', gridRow: 'span 1' }}>
+          <ScreenshotCard />
+        </div>
+
+        {/* 本週待辦進度 — 2×1 */}
+        <div style={{ gridColumn: 'span 2', gridRow: 'span 1' }}>
+          <WeeklyProgressCard />
+        </div>
+      </div>
+
+      {/* Weekly Planner modal */}
+      <WeeklyPlanner open={plannerOpen} onClose={() => setPlannerOpen(false)} />
     </>
   )
 }

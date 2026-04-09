@@ -114,10 +114,20 @@ export default function SettingsPage() {
   const [expandedLog, setExpandedLog] = useState<string | null>(null)
   const [logsVisible, setLogsVisible] = useState(false)
   const [clearing, setClearing] = useState(false)
+  const [healthWarning, setHealthWarning] = useState(8)
+  const [healthDanger, setHealthDanger] = useState(12)
 
   useEffect(() => {
     loadSettings()
     loadLogs()
+    // Load health thresholds from localStorage
+    try {
+      const saved = JSON.parse(localStorage.getItem('ryanos_settings') ?? '{}')
+      if (saved.healthThreshold) {
+        setHealthWarning(saved.healthThreshold.warning ?? 8)
+        setHealthDanger(saved.healthThreshold.danger ?? 12)
+      }
+    } catch { /* empty */ }
   }, [])
 
   async function loadSettings() {
@@ -256,6 +266,62 @@ export default function SettingsPage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Health Threshold */}
+      <section>
+        <h2 className="font-semibold text-base mb-4" style={{ color: 'var(--text-primary)' }}>
+          工作量健康指標
+        </h2>
+        <div
+          className="flex flex-col gap-4 p-4 rounded-[var(--radius-card)] border"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <label className="text-xs font-medium mb-1 block" style={{ color: 'var(--text-secondary)' }}>
+                🟡 注意門檻（每日任務數）
+              </label>
+              <input
+                type="number"
+                value={healthWarning}
+                onChange={(e) => setHealthWarning(Number(e.target.value))}
+                min={1}
+                max={50}
+                className="w-full text-sm px-3 py-2 rounded-[var(--radius-btn)] border outline-none transition-colors"
+                style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+              />
+            </div>
+            <div className="flex-1">
+              <label className="text-xs font-medium mb-1 block" style={{ color: 'var(--text-secondary)' }}>
+                🔴 超標門檻（每日任務數）
+              </label>
+              <input
+                type="number"
+                value={healthDanger}
+                onChange={(e) => setHealthDanger(Number(e.target.value))}
+                min={1}
+                max={50}
+                className="w-full text-sm px-3 py-2 rounded-[var(--radius-btn)] border outline-none transition-colors"
+                style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+              />
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              const settings = JSON.parse(localStorage.getItem('ryanos_settings') ?? '{}')
+              settings.healthThreshold = { warning: healthWarning, danger: healthDanger }
+              localStorage.setItem('ryanos_settings', JSON.stringify(settings))
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-[var(--radius-btn)] transition-colors self-start"
+            style={{ backgroundColor: 'var(--accent)', color: 'var(--text-primary)' }}
+          >
+            儲存門檻
+          </button>
+          <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+            每日平均 ≤ {healthWarning} 項 = 健康｜{healthWarning}–{healthDanger} 項 = 注意｜&gt; {healthDanger} 項 = 超標
+          </p>
         </div>
       </section>
 

@@ -19,6 +19,7 @@ const MODEL_MAP: Record<string, string> = {
   'quick-note-analyze': 'claude-haiku-4-5-20251001',
   'invoice-process': 'claude-haiku-4-5-20251001',
   'email-classify': 'claude-haiku-4-5-20251001',
+  'screenshot-recognize': 'claude-haiku-4-5-20251001',
 }
 
 export async function POST(req: Request) {
@@ -70,15 +71,33 @@ export async function POST(req: Request) {
       systemPrompt = `你是發票整理助手。分析使用者的發票資料，按類別整理並列出明細。`
     } else if (type === 'email-classify') {
       systemPrompt = `你是 Email 助手。分析信件，依緊急程度分類（🔴 立即處理 / 🟡 今天內 / 🟢 存檔），每封一行摘要。`
+    } else if (type === 'screenshot-recognize') {
+      systemPrompt = `你是截圖辨識助手。辨識截圖中的文字和內容，用繁體中文簡述重點（3 句以內）。如果看到待辦事項、會議、日期等，特別標出。`
     } else {
       return NextResponse.json({ success: false, error: `未知 type: ${type}` }, { status: 400 })
     }
+
+    // Build messages — use vision for screenshot
+    const userContent: Anthropic.MessageCreateParams['messages'][0]['content'] =
+      type === 'screenshot-recognize' && options?.imageBase64
+        ? [
+            {
+              type: 'image' as const,
+              source: {
+                type: 'base64' as const,
+                media_type: (options.mediaType as 'image/png' | 'image/jpeg' | 'image/gif' | 'image/webp') ?? 'image/png',
+                data: options.imageBase64 as string,
+              },
+            },
+            { type: 'text' as const, text: userMessage },
+          ]
+        : userMessage
 
     const message = await client.messages.create({
       model,
       max_tokens: 4096,
       system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
+      messages: [{ role: 'user', content: userContent }],
     })
 
     const resultText = message.content
